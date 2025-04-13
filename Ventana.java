@@ -4,47 +4,79 @@ import java.awt.event.ActionListener;
 
 public class Ventana {
     private JPanel principal;
-    private JButton btnInsertar;
-    private JButton btnExtraer;
-    private JTextArea txtListado;
-    private JLabel lblEtiqueta;
-    private JTextField txtDato;
-    private JButton btnDevolver;
-    private Pila coleccion=new Pila();
+    private JTextArea txtCodigo;
+    private JButton btnComprobar;
+    private JLabel lblCodigo;
+    private JTextArea IMPRESION;
 
-    public Ventana(){
+    public Ventana() {
 
-        btnInsertar.addActionListener(new ActionListener() {
-            int contador = 0;
+        btnComprobar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 try {
-                    if (contador < 10) {
-                        coleccion.insertar(txtDato.getText());
-                        contador++;
-                        txtListado.setText(coleccion.toString());
-                    } else {
-                        throw new IllegalArgumentException("Unicamente se pueden poner 10 objetos");
+                    Pila pilas = new Pila();
+                    String codigo = txtCodigo.getText();
+
+                    StringBuilder impresion = new StringBuilder();
+
+                    for (int i = 0; i <= codigo.length()-1; i++) {
+                        char c = codigo.charAt(i);
+
+                        if (c == '(' || c == '{' || c == '[') {
+                            pilas.insertar(String.valueOf(c));
+                            impresion.append("Insertado: ").append(c).append("\n");
+
+                            IMPRESION.setText(impresion.toString());
+                            JOptionPane.showMessageDialog(null, "Elemento ingresado: " + c + "\n" + impresion.toString());
+                        } else {
+                            if (c == ')') {
+                                char salida = pilas.extraer().charAt(0);
+                                if (salida != '(') {
+                                    JOptionPane.showMessageDialog(null, "Código no balanceado");
+                                    return;
+                                }
+
+                                impresion.append("Extraído: ").append(')').append("\n");
+                                IMPRESION.setText(impresion.toString());
+                                JOptionPane.showMessageDialog(null, "Elemento extraído: " + salida + "\n" + impresion.toString());
+                            } else {
+                                if (c == '}') {
+                                    char salida = pilas.extraer().charAt(0);
+                                    if (salida != '{') {
+                                        JOptionPane.showMessageDialog(null, "Código no balanceado");
+                                        return;
+                                    }
+
+                                    impresion.append("Extraído: ").append('}').append("\n");
+                                    IMPRESION.setText(impresion.toString());
+                                    JOptionPane.showMessageDialog(null, "Elemento extraído: " + salida + "\n" + impresion.toString());
+                                } else {
+                                    if (c == ']') {
+                                        char salida = pilas.extraer().charAt(0);
+                                        if (salida != '[') {
+                                            JOptionPane.showMessageDialog(null, "Código no balanceado");
+                                            return;
+                                        }
+
+                                        impresion.append("Extraído: ").append(']').append("\n");
+                                        IMPRESION.setText(impresion.toString());
+                                        JOptionPane.showMessageDialog(null, "Elemento extraído: " + salida + "\n" + impresion.toString());
+                                    }
+                                }
+                            }
+                        }
+
                     }
-                }catch (IllegalArgumentException ex){
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    if (pilas.esVacia()) {
+                        JOptionPane.showMessageDialog(null, "Código balanceado");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Código no balanceado");
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
                 }
-            }
-        });
-        btnExtraer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String eliminado=coleccion.extraer();
-                JOptionPane.showMessageDialog(null,"Se elimino: "+eliminado);
-                txtListado.setText(coleccion.toString());
-            }
-        });
-        btnDevolver.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String extraido =coleccion.cima();
-                JOptionPane.showMessageDialog(null, "Objeto extraido: "+extraido);
-                txtListado.setText(coleccion.toString());
             }
         });
     }

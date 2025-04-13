@@ -11,7 +11,9 @@ public class Pila {
         coleccion.push(dato);
     }
 
-    public String extraer(){
+    public String extraer() throws Exception{
+        if(coleccion.isEmpty())
+            throw new Exception("Error en método extraer, pila vacia");
         return coleccion.pop();
     }
 
@@ -27,4 +29,16 @@ public class Pila {
         }
         return lista.toString();
     }
+
+    public int size(){
+        return coleccion.size();
+    }
+
+    public boolean esVacia(){
+        if(coleccion.isEmpty())
+            return true;
+        return false;
+    }
+
+
 }
